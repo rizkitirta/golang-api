@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	// "log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,9 +13,9 @@ func main() {
 	router.GET("/", rootHandler)
 	router.GET("/hello", helloHandler)
 	router.GET("/user/:id/type/:type", GetUserById)
-	router.GET("/product",productHandler)
+	router.GET("/product", productHandler)
 
-	router.POST("/books",storeBooks)
+	router.POST("/books", storeBooks)
 
 	router.Run()
 }
@@ -25,7 +26,7 @@ func rootHandler(c *gin.Context) {
 	})
 }
 
-func helloHandler(c *gin.Context)  {
+func helloHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "hello golang",
 	})
@@ -45,26 +46,26 @@ func productHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "Product " + product + " Price " + price,
 	})
-	
+
 }
 
 type Book struct {
-	Name string  `json:"name"`
-	Price int  		`json:"price"`
+	Name     string `json:"name" binding:"required"`
+	Price    int    `json:"price" binding:"required,number"`
 	SubTitle string `json:"sub_title"`
 }
 
-func storeBooks(c *gin.Context)  {
+func storeBooks(c *gin.Context) {
 	var book Book
 	err := c.ShouldBindJSON(&book)
 	if err != nil {
-		log.Fatal(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(200, gin.H{
-		"name": book.Name,
-		"price": book.Price,
+		"name":      book.Name,
+		"price":     book.Price,
 		"sub_title": book.SubTitle,
 	})
 }
-	
