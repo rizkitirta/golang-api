@@ -7,6 +7,8 @@ func main() {
 
 	router.GET("/", rootHandler)
 	router.GET("/hello", helloHandler)
+	router.GET("/user/:id/type/:type", GetUserById)
+	router.GET("/product",productHandler)
 
 	router.Run()
 }
@@ -22,3 +24,21 @@ func helloHandler(c *gin.Context)  {
 		"message": "hello golang",
 	})
 }
+
+func GetUserById(c *gin.Context) {
+	id := c.Param("id")
+	tipe := c.Param("type")
+	c.JSON(200, gin.H{
+		"message": "hello " + id + " Tipe " + tipe,
+	})
+}
+
+func productHandler(c *gin.Context) {
+	product := c.Query("name")
+	price := c.Query("price")
+	c.JSON(200, gin.H{
+		"message": "Product " + product + " Price " + price,
+	})
+	
+}
+	
