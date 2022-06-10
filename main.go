@@ -2,9 +2,12 @@ package main
 
 import (
 	// "log"
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 func main() {
@@ -51,7 +54,7 @@ func productHandler(c *gin.Context) {
 
 type Book struct {
 	Name     string `json:"name" binding:"required"`
-	Price    int    `json:"price" binding:"required,number"`
+	Price    json.Number    `json:"price" binding:"required,number"`
 	SubTitle string `json:"sub_title"`
 }
 
@@ -59,8 +62,14 @@ func storeBooks(c *gin.Context) {
 	var book Book
 	err := c.ShouldBindJSON(&book)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		for _, e := range err.(validator.ValidationErrors) {
+			errorMessage := fmt.Sprintf("Error on field %s, condition: %s", e.Field(), e.ActualTag())
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": errorMessage,
+			})
+			return
+		}
+
 	}
 
 	c.JSON(200, gin.H{
