@@ -49,8 +49,9 @@ func productHandler(c *gin.Context) {
 }
 
 type Book struct {
-	Name string  
-	Price int  
+	Name string  `json:"name"`
+	Price int  		`json:"price"`
+	SubTitle string `json:"sub_title"`
 }
 
 func storeBooks(c *gin.Context)  {
@@ -63,6 +64,7 @@ func storeBooks(c *gin.Context)  {
 	c.JSON(200, gin.H{
 		"name": book.Name,
 		"price": book.Price,
+		"sub_title": book.SubTitle,
 	})
 }
 	
