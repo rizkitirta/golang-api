@@ -1,6 +1,10 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
 	router := gin.Default()
@@ -9,6 +13,8 @@ func main() {
 	router.GET("/hello", helloHandler)
 	router.GET("/user/:id/type/:type", GetUserById)
 	router.GET("/product",productHandler)
+
+	router.POST("/books",storeBooks)
 
 	router.Run()
 }
@@ -40,5 +46,23 @@ func productHandler(c *gin.Context) {
 		"message": "Product " + product + " Price " + price,
 	})
 	
+}
+
+type Book struct {
+	Name string  
+	Price int  
+}
+
+func storeBooks(c *gin.Context)  {
+	var book Book
+	err := c.ShouldBindJSON(&book)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.JSON(200, gin.H{
+		"name": book.Name,
+		"price": book.Price,
+	})
 }
 	
