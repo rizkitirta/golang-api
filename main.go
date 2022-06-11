@@ -1,6 +1,7 @@
 package main
 
 import (
+	"golang-api-gin/book"
 	"golang-api-gin/handler"
 	"log"
 
@@ -12,11 +13,12 @@ import (
 func main() {
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 	dsn := "root:@tcp(127.0.0.1:3306)/golang_api?charset=utf8mb4&parseTime=True&loc=Local"
-	_, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	db.AutoMigrate(&book.Book{})
 	router := gin.Default()
 
 	API_V1 := router.Group("/api/v1")
