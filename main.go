@@ -39,13 +39,25 @@ func main() {
 	// log.Println("Title: ", book.Title, " Price: ", book.Price, " Description: ", book.Description, " Rating: ", book.Rating)
 
 	// Find All
-	var books []book.Book
-	err = db.Debug().Where("rating = ?",5).Find(&books).Error
+	// var books []book.Book
+	// err = db.Debug().Where("rating = ?",5).Find(&books).Error
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// for _, book := range books {
+	// 	log.Println("Title: ", book.Title, " Price: ", book.Price, " Description: ", book.Description, " Rating: ", book.Rating)
+	// }
+
+	// Update
+	var book book.Book
+	err = db.Debug().Where("id= ?",3).First(&book).Error
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, book := range books {
-		log.Println("Title: ", book.Title, " Price: ", book.Price, " Description: ", book.Description, " Rating: ", book.Rating)
+	book.Title = "Belajar Golang (Update)"
+	err = db.Debug().Save(&book).Error
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	// Router
