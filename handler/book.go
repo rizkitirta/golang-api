@@ -9,19 +9,27 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func RootHandler(c *gin.Context) {
+type bookHandler struct {
+	bookService book.Service
+}
+
+func NewBookHandler(bookService book.Service) *bookHandler {
+	return &bookHandler{bookService}
+}
+
+func (handler *bookHandler) RootHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "welcome",
 	})
 }
 
-func HelloHandler(c *gin.Context) {
+func (handler *bookHandler) HelloHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "hello golang",
 	})
 }
 
-func GetUserById(c *gin.Context) {
+func (handler *bookHandler) GetUserById(c *gin.Context) {
 	id := c.Param("id")
 	tipe := c.Param("type")
 	c.JSON(200, gin.H{
@@ -29,7 +37,7 @@ func GetUserById(c *gin.Context) {
 	})
 }
 
-func ProductHandler(c *gin.Context) {
+func (handler *bookHandler) ProductHandler(c *gin.Context) {
 	product := c.Query("name")
 	price := c.Query("price")
 	c.JSON(200, gin.H{
@@ -38,11 +46,10 @@ func ProductHandler(c *gin.Context) {
 
 }
 
+func (handler *bookHandler) StoreBooks(c *gin.Context) {
+	var bookRequest book.BookRequest
 
-func StoreBooks(c *gin.Context) {
-	var book book.BookInput
-	
-	err := c.ShouldBindJSON(&book)
+	err := c.ShouldBindJSON(&bookRequest)
 	if err != nil {
 		errorMessages := []string{}
 		for _, e := range err.(validator.ValidationErrors) {
@@ -55,16 +62,19 @@ func StoreBooks(c *gin.Context) {
 		return
 	}
 
+	book, err := handler.bookService.Create(bookRequest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
 	c.JSON(200, gin.H{
-		"name":      book.Name,
-		"price":     book.Price,
-		"sub_title": book.SubTitle,
+		"data": book,
 	})
 }
 
-func StoreBooksV2(c *gin.Context) {
-	var book book.BookInputV2
-	
+func (handler *bookHandler) StoreBooksV2(c *gin.Context) {
+	var book book.BookRequestV2
+
 	err := c.ShouldBindJSON(&book)
 	if err != nil {
 		errorMessages := []string{}

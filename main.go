@@ -22,42 +22,21 @@ func main() {
 	db.AutoMigrate(&book.Book{})
 
 	bookRepository := book.NewRepository(db)
-
-	// Find All
-	// books,err := bookRepository.FindAll()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// for _, book := range books {
-	// 	log.Println("======================")
-	// 	log.Println("Title :" , book.Title)
-	// 	log.Println("Price :",  book.Price)
-	// 	log.Println("======================")
-	// }
-
-	// Find By Id
-	book, err := bookRepository.FindById(1)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("======================")
-	log.Println("Title :", book.Title)
-	log.Println("Price :", book.Price)
-	log.Println("======================")
+	bookService := book.NewService(bookRepository)
+	bookHandler := handler.NewBookHandler(bookService)
 
 	// Router
 	router := gin.Default()
 
 	API_V1 := router.Group("/api/v1")
-	API_V1.GET("/", handler.RootHandler)
-	API_V1.GET("/hello", handler.HelloHandler)
-	API_V1.GET("/user/:id/type/:type", handler.GetUserById)
-	API_V1.GET("/product", handler.ProductHandler)
-	API_V1.POST("/books", handler.StoreBooks)
+	API_V1.GET("/", bookHandler.RootHandler)
+	API_V1.GET("/hello", bookHandler.HelloHandler)
+	API_V1.GET("/user/:id/type/:type", bookHandler.GetUserById)
+	API_V1.GET("/product", bookHandler.ProductHandler)
+	API_V1.POST("/books", bookHandler.StoreBooks)
 
 	API_V2 := router.Group("/api/v2")
-	API_V2.POST("/books", handler.StoreBooksV2)
+	API_V2.POST("/books", bookHandler.StoreBooksV2)
 
 	router.Run()
 }
