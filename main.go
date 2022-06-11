@@ -21,55 +21,30 @@ func main() {
 	// migrate the schema
 	db.AutoMigrate(&book.Book{})
 
-	// Create
-	// book := book.Book{
-	// 	Title: "Belajar Golang",
-	// 	Price: 100,
-	// 	Description: "Mahir menggunakan golang",
-	// 	Rating: 5,
-	// }
-	// db.Create(&book)
-	
-	// Find One
-	// var book book.Book
-	// err = db.Debug().First(&book,1).Error
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// log.Println("Title: ", book.Title, " Price: ", book.Price, " Description: ", book.Description, " Rating: ", book.Rating)
+	bookRepository := book.NewRepository(db)
 
 	// Find All
-	// var books []book.Book
-	// err = db.Debug().Where("rating = ?",5).Find(&books).Error
+	// books,err := bookRepository.FindAll()
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
+
 	// for _, book := range books {
-	// 	log.Println("Title: ", book.Title, " Price: ", book.Price, " Description: ", book.Description, " Rating: ", book.Rating)
+	// 	log.Println("======================")
+	// 	log.Println("Title :" , book.Title)
+	// 	log.Println("Price :",  book.Price)
+	// 	log.Println("======================")
 	// }
 
-	// Update
-	// var book book.Book
-	// err = db.Debug().Where("id= ?",3).First(&book).Error
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// book.Title = "Belajar Golang (Update)"
-	// err = db.Debug().Save(&book).Error
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// Delete
-	var book book.Book
-	err = db.Debug().Where("id= ?",3).First(&book).Error
+	// Find By Id
+	book, err := bookRepository.FindById(1)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = db.Debug().Delete(&book).Error
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Println("======================")
+	log.Println("Title :", book.Title)
+	log.Println("Price :", book.Price)
+	log.Println("======================")
 
 	// Router
 	router := gin.Default()
