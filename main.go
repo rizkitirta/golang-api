@@ -19,6 +19,14 @@ func main() {
 	}
 
 	db.AutoMigrate(&book.Book{})
+	book := book.Book{
+		Title: "Belajar Golang",
+		Price: 100,
+		Description: "Mahir menggunakan golang",
+		Rating: 5,
+	}
+	db.Create(&book)
+
 	router := gin.Default()
 
 	API_V1 := router.Group("/api/v1")
