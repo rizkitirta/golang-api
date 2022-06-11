@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang-api-gin/book"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -33,36 +34,54 @@ func (handler *bookHandler) StoreBooks(c *gin.Context) {
 		return
 	}
 
-	book, err := handler.bookService.Create(bookRequest)
+	result, err := handler.bookService.Create(bookRequest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(200, gin.H{
-		"data": book,
+		"data": book.ResponseConverter(result),
 	})
 }
 
-func(handler *bookHandler) GetBooks(c *gin.Context) {
-	books,err := handler.bookService.FindAll()
+func (handler *bookHandler) GetBooks(c *gin.Context) {
+	books, err := handler.bookService.FindAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	var booksResponse []book.BookResponse
 	for _, v := range books {
-		bookResponse := book.BookResponse{
-			ID: v.ID,
-			Title: v.Title,
-			Description: v.Description,
-			Price: v.Price,
-			Rating: v.Rating,
-		}
+		bookResponse := book.ResponseConverter(v)
 
 		booksResponse = append(booksResponse, bookResponse)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": booksResponse,
+	})
+}
+
+func (handler *bookHandler) GetBookById(c *gin.Context) {
+	idString := c.Param("id")
+	id, err := strconv.Atoi(idString)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	result, err := handler.bookService.FindById(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	bookResponse := book.ResponseConverter(result)
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": bookResponse,
 	})
 }
