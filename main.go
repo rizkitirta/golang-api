@@ -18,15 +18,37 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// migrate the schema
 	db.AutoMigrate(&book.Book{})
-	book := book.Book{
-		Title: "Belajar Golang",
-		Price: 100,
-		Description: "Mahir menggunakan golang",
-		Rating: 5,
-	}
-	db.Create(&book)
 
+	// Create
+	// book := book.Book{
+	// 	Title: "Belajar Golang",
+	// 	Price: 100,
+	// 	Description: "Mahir menggunakan golang",
+	// 	Rating: 5,
+	// }
+	// db.Create(&book)
+	
+	// Find One
+	// var book book.Book
+	// err = db.Debug().First(&book,1).Error
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// log.Println("Title: ", book.Title, " Price: ", book.Price, " Description: ", book.Description, " Rating: ", book.Rating)
+
+	// Find All
+	var books []book.Book
+	err = db.Debug().Where("rating = ?",5).Find(&books).Error
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, book := range books {
+		log.Println("Title: ", book.Title, " Price: ", book.Price, " Description: ", book.Description, " Rating: ", book.Rating)
+	}
+
+	// Router
 	router := gin.Default()
 
 	API_V1 := router.Group("/api/v1")
