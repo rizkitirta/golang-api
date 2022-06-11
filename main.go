@@ -29,14 +29,8 @@ func main() {
 	router := gin.Default()
 
 	API_V1 := router.Group("/api/v1")
-	API_V1.GET("/", bookHandler.RootHandler)
-	API_V1.GET("/hello", bookHandler.HelloHandler)
-	API_V1.GET("/user/:id/type/:type", bookHandler.GetUserById)
-	API_V1.GET("/product", bookHandler.ProductHandler)
 	API_V1.POST("/books", bookHandler.StoreBooks)
-
-	API_V2 := router.Group("/api/v2")
-	API_V2.POST("/books", bookHandler.StoreBooksV2)
+	API_V1.GET("/books", bookHandler.GetBooks)
 
 	router.Run()
 }
