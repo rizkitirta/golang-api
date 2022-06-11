@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"golang-api-gin/request"
+	"golang-api-gin/book"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -40,7 +40,7 @@ func ProductHandler(c *gin.Context) {
 
 
 func StoreBooks(c *gin.Context) {
-	var book request.Book
+	var book book.BookInput
 	
 	err := c.ShouldBindJSON(&book)
 	if err != nil {
@@ -63,7 +63,7 @@ func StoreBooks(c *gin.Context) {
 }
 
 func StoreBooksV2(c *gin.Context) {
-	var book request.BookV2
+	var book book.BookInputV2
 	
 	err := c.ShouldBindJSON(&book)
 	if err != nil {
