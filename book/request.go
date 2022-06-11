@@ -8,3 +8,10 @@ type BookRequest struct {
 	Description string      `json:"description"`
 	Rating      json.Number `json:"rating"`
 }
+
+type BookUpdateRequest struct {
+	Title       string      `json:"title"`
+	Price       json.Number `json:"price"`
+	Description string      `json:"description"`
+	Rating      json.Number `json:"rating"`
+}

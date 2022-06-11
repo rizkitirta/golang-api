@@ -30,8 +30,10 @@ func main() {
 
 	API_V1 := router.Group("/api/v1")
 	API_V1.POST("/books", bookHandler.StoreBooks)
+	API_V1.PUT("/books/:id", bookHandler.UpdateBook)
 	API_V1.GET("/books", bookHandler.GetBooks)
 	API_V1.GET("/book/:id", bookHandler.GetBookById)
+	API_V1.DELETE("/book/:id", bookHandler.Delete)
 
 	router.Run()
 }
