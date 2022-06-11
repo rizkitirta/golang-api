@@ -49,13 +49,24 @@ func main() {
 	// }
 
 	// Update
+	// var book book.Book
+	// err = db.Debug().Where("id= ?",3).First(&book).Error
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// book.Title = "Belajar Golang (Update)"
+	// err = db.Debug().Save(&book).Error
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// Delete
 	var book book.Book
 	err = db.Debug().Where("id= ?",3).First(&book).Error
 	if err != nil {
 		log.Fatal(err)
 	}
-	book.Title = "Belajar Golang (Update)"
-	err = db.Debug().Save(&book).Error
+	err = db.Debug().Delete(&book).Error
 	if err != nil {
 		log.Fatal(err)
 	}
