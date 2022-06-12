@@ -3,6 +3,7 @@ package main
 import (
 	"golang-api-gin/book"
 	"golang-api-gin/handler"
+	"golang-api-gin/user"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -20,10 +21,17 @@ func main() {
 
 	// migrate the schema
 	db.AutoMigrate(&book.Book{})
+	db.AutoMigrate(&user.User{})
 
+	//book handlers
 	bookRepository := book.NewRepository(db)
 	bookService := book.NewService(bookRepository)
 	bookHandler := handler.NewBookHandler(bookService)
+
+	//user handlers
+	userRepository := user.NewRepository(db)
+	userService := user.NewService(userRepository)
+	userHandler := handler.NewUserHandler(userService)
 
 	// Router
 	router := gin.Default()
@@ -35,5 +43,10 @@ func main() {
 	API_V1.GET("/book/:id", bookHandler.GetBookById)
 	API_V1.DELETE("/book/:id", bookHandler.Delete)
 
+	// User API
+	API_V1.GET("/users", userHandler.GetUser)
+	API_V1.POST("/user", userHandler.Store)
+	API_V1.PUT("/user", userHandler.UpdateUser)
+	API_V1.DELETE("/user/:id", userHandler.Delete)
 	router.Run()
 }
