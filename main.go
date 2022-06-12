@@ -35,6 +35,7 @@ func main() {
 
 	// Router
 	router := gin.Default()
+	router.Static("./public", "./public")
 
 	API_V1 := router.Group("/api/v1")
 	API_V1.POST("/books", bookHandler.StoreBooks)
@@ -48,5 +49,6 @@ func main() {
 	API_V1.POST("/user", userHandler.Store)
 	API_V1.PUT("/user", userHandler.UpdateUser)
 	API_V1.DELETE("/user/:id", userHandler.Delete)
+	API_V1.POST("/user/upload", userHandler.SaveFileHandler)
 	router.Run()
 }
